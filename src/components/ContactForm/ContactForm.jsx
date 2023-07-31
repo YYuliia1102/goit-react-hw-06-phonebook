@@ -34,21 +34,41 @@ const ContactForm = () => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <div>
-                <label>
+            <div className="mb-3">
+                <label htmlFor="name" className="form-label">
                     Ім'я:
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
                 </label>
+                <input
+                    type="text"
+                    id="name"
+                    className="form-control"
+                    name="name"
+                    placeholder="Yuliia Yehorova"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                />
             </div>
-            <div>
-                <label>
+
+            <div className="mb-3">
+                <label htmlFor="number" className="form-label">
                     Номер:
-                    <input type="text" value={number} onChange={(e) => setNumber(e.target.value)} />
                 </label>
+                <input
+                    type="tel"
+                    id="number"
+                    className="form-control"
+                    name="number"
+                    placeholder="+380(97)-000-00-00"
+                    value={number}
+                    onChange={(e) => setNumber(e.target.value)}
+                    required
+                />
             </div>
-            <div>
-                <button type="submit">Додати контакт</button>
-            </div>
+
+            <button type="submit" className="btn btn-primary">
+                Додати контакт
+            </button>
         </form>
     );
 };
