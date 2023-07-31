@@ -1,24 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import { useDispatch } from "react-redux";
+import { setFilter } from "../../store/contactSlice";
+// import PropTypes from "prop-types";
 
-const Filter = ({ filter, onFilterChange }) => {
+const Filter = () => {
+    const dispatch = useDispatch();
+
+    const handleFilterChange = (event) => {
+        dispatch(setFilter(event.target.value));
+    };
+
     return (
-        <div className="mb-3">
-            <label htmlFor="filter" className="form-label">Search contacts:</label>
-            <input
-                type="text"
-                id="filter"
-                className="form-control"
-                value={filter}
-                onChange={onFilterChange}
-            />
+        <div>
+            <input type="text" onChange={handleFilterChange} />
         </div>
     );
-};
-
-Filter.propTypes = {
-    filter: PropTypes.string.isRequired,
-    onFilterChange: PropTypes.func.isRequired
 };
 
 export default Filter;

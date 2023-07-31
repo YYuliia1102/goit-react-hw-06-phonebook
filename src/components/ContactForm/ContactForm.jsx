@@ -1,74 +1,56 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { nanoid } from "nanoid";
+import { addContact } from "../../store/contactSlice";
+import { selectContacts } from "../../store/contactSlice";
 
-class ContactForm extends Component {
-    state = {
-        name: '',
-        number: ''
-    };
+const ContactForm = () => {
+    const [name, setName] = useState("");
+    const [number, setNumber] = useState("");
+    const dispatch = useDispatch();
+    const contacts = useSelector(selectContacts);
 
-    static propTypes = {
-        contacts: PropTypes.arrayOf(
-            PropTypes.shape({
-                id: PropTypes.string.isRequired,
-                name: PropTypes.string.isRequired,
-                number: PropTypes.string.isRequired
-            })
-        ).isRequired,
-        onAddContact: PropTypes.func.isRequired
-    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (name.trim() === "" || number.trim() === "") {
+            alert("Будь ласка, заповніть всі поля форми.");
+            return;
+        }
 
-    handleChange = (event) => {
-        this.setState({ [event.target.name]: event.target.value });
-    };
-
-    handleSubmit = (event) => {
-        event.preventDefault();
-        const { name, number } = this.state;
-        const { onAddContact } = this.props;
-
-
-        onAddContact(name, number);
-        this.setState({ name: '', number: '' });
-    };
-
-    render() {
-        const { name, number } = this.state;
-
-        return (
-            <form onSubmit={this.handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Name:</label>
-                    <input
-                        type="text"
-                        id="name"
-                        className="form-control"
-                        name="name"
-                        placeholder="Name"
-                        value={name}
-                        onChange={this.handleChange}
-                        required
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label htmlFor="number" className="form-label">Number:</label>
-                    <input
-                        type="tel"
-                        id="number"
-                        className="form-control"
-                        name="number"
-                        placeholder="+380(97)-000-00-00"
-                        value={number}
-                        onChange={this.handleChange}
-                        required
-                    />
-                </div>
-
-                <button type="submit" className="btn btn-primary">Add contact</button>
-            </form>
+        const isExistingContact = contacts.some(
+            (contact) => contact.name.toLowerCase() === name.toLowerCase()
         );
-    }
-}
+
+        if (isExistingContact) {
+            alert("Такий контакт вже існує.");
+            return;
+        }
+
+        const newContact = { id: nanoid(), name, number };
+        dispatch(addContact(newContact));
+        setName("");
+        setNumber("");
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div>
+                <label>
+                    Ім'я:
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Номер:
+                    <input type="text" value={number} onChange={(e) => setNumber(e.target.value)} />
+                </label>
+            </div>
+            <div>
+                <button type="submit">Додати контакт</button>
+            </div>
+        </form>
+    );
+};
 
 export default ContactForm;
